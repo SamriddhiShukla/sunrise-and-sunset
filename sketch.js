@@ -1,83 +1,92 @@
-
 const Engine = Matter.Engine;
-const World = Matter.World;
+const World= Matter.World;
 const Bodies = Matter.Bodies;
-const Body = Matter.Body;
+const Constraint = Matter.Constraint;
 
-var divisons = [];
-var divisonsHeight = 300;
-var particles = [];
-var plinkos = []; 
-function preload()
-{
-	
+var engine, world;
+var backgroundImg;
+
+var bg = "sunrise1.png" ;
+
+function preload() {
+    getBackgroundImg()
 }
 
+function setup(){
+    var canvas = createCanvas(1200,700);
+    engine = Engine.create();
+    world = engine.world;
 
-
-function setup() {
-	createCanvas(800, 700);
-	engine = Engine.create();
-	world = engine.world;
-
-	//Create the Bodies Here.
-	ground = new Ground(400,690,800,20);
-
-  
-  for (var i = 0; i<=width; i= i+80) {
-      divisons.push(new Division(i,height-divisonsHeight/2, 10, divisonsHeight));
-  }
-
-  for (var j=75; j<=width; j = j+50) {
-    plinkos.push(new Plinko(j, 75));
-  }
-  for (var j=50; j<=width-10; j=j+50) {
-    plinkos.push(new Plinko(j,175));
-  }
-  for (var j=75; j<=width; j=j+50) {
-    plinkos.push(new Plinko(j,275));
-  }
-  for (var j=50; j<=width-10; j=j+50) {
-    plinkos.push(new Plinko(j,375));
-  }
-
-  
-
- 
-	Engine.run(engine);
-  
 }
 
+function draw(){
 
-function draw() {
-  rectMode(CENTER);
-  background(0);
-  
- 
-  
-  
-  for (var n = 0; n<divisons.length; n++) {
-    divisons[n].display();
-  }
-
-  if (frameCount %60 === 0) {
-    particles.push(new Particle(random(width/2-30, width/2+30),10,10));
-  }
-  
-  for (var h = 0; h<particles.length; h++) {
-    particles[h].display();
-  }
-
-  for (var j = 0; j<plinkos.length; j++) {
-    plinkos[j].display();
-  }
+    // add condition to check if any background image is there to add
+    if(backgroundImg){
+        background(backgroundImg);
+    }
 
 
-  ground.display();
- 
+    Engine.update(engine);
 
- 
+    // write code to display time in correct format here
+
+
 }
 
+async function getBackgroundImg(){
 
+    // write code to fetch time from API 
+    var response = await fetch
+    ("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
 
+    //change the data in JSON format
+    var responseJson=await response.json();
+    console.log("Time",responseJson);
+    // write code slice the datetime
+    var datetime= responseJson.datetime
+    var hour=datetime.slice(11,13)
+
+    console.log(hour);
+    // add conditions to change the background images from sunrise to sunset
+    if(hour>=04 && hour<=06){
+        bg = "sunrise1.png";
+    }
+    else if(hour>=06 && hour<=08){
+        bg="sunrise2.png";
+    }
+    else if(hour>=08 && hour<=10){
+        bg = "sunrise3.png"; 
+    }
+    else if(hour>=10 && hour<=12){
+        bg = "sunrise4.png";
+    }
+    else if(hour>=12 && hour<=14){
+        bg ="sunrise5.png";
+    }
+    else if(hour>=14 && hour<=16){
+        bg ="sunrise6.png";
+    }
+    else if(hour>=16 && hour<=18){
+        bg = "sunset7.png";
+    }
+    else if(hour>=18 && hour<=20){
+        bg ="sunset8.png";
+    }
+    else if(hour>=20 && hour<=22){
+        bg = "sunset9.png";
+    }
+    else if(hour>=22 && hour<=24){
+        bg = "sunset10.png";
+    }
+    else if(hour>=24 && hour<=00){
+        bg = "sunset11.png";
+    }
+    else if (hour>=00 && hour<=04){
+        bg="sunset12.png";
+    }
+    //load the image in backgroundImg variable here
+
+    backgroundImg = loadImage(bg);
+    console.log(backgroundImg);
+}
